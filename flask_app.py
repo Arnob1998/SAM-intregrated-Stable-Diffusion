@@ -4,6 +4,7 @@ from PIL import Image
 import base64
 from PIL import Image
 import io
+import pickle
 
 app = Flask(__name__)
 
@@ -38,11 +39,12 @@ def bbox_postprocess():
 def auto_postprocess():   
     # sam_pipe = Models.SAM_Pipeline()
     entity_masks = sam_pipe.auto_segmentation()
+
     annot_pipe = Models.Annotator_Pipeline()
     # entity_masks = annot_pipe.anti_aliasing(entity_masks)
-    entity_annots = annot_pipe.extract_annots(entity_masks)
+    coords = annot_pipe.extract_coordinates_from_mask(entity_masks)
     # entity_annots = annot_pipe.edge_detechtion_annots(entity_annots, entity_masks[0].shape)
-    coords = annot_pipe.annot2coords(entity_annots)
+    # coords = annot_pipe.annot2coords(entity_annots)
 
     data = {}
 

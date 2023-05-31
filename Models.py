@@ -160,6 +160,30 @@ class Annotator_Pipeline:
 
         return annotations
 
+    def extract_coordinates_from_mask(self,mask_image):
+        # Load the mask image
+        mask_image = np.array(mask_image).astype(np.uint8) * 255
+        coordinates_all = []
+
+        for i in tqdm(range(len(mask_image))):
+            # Threshold the mask image to convert it into a binary image
+            _, binary_image = cv2.threshold(mask_image[i], 127, 255, cv2.THRESH_BINARY)
+            
+            # Find contours in the binary image
+            contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            # Extract the coordinates from the contours
+            coordinates = []
+            for contour in contours:
+                for point in contour:
+                    x, y = point[0]
+                    coordinates.append(x)
+                    coordinates.append(y)
+
+            coordinates_all.append(coordinates)
+            
+        return coordinates_all
+
     def annot2coords(self,annots):
         coords = []
         for i in range(len(annots)):

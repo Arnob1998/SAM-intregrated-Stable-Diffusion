@@ -22,10 +22,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type='text/javascript' src='http://davidlynch.org/projects/maphilight/jquery.maphilight.js'></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            // $('.map').maphilight({fillColor:'00AAFF',alwaysOn: true, stroke:true});
-            $('.map').maphilight();
-        });   
+    $(document).ready(function () {
+        $('.map').maphilight();
+    });   
+
+
 
 function saveImage(imageBase64) {
     var xhr = new XMLHttpRequest();
@@ -87,7 +88,7 @@ function saveImage(imageBase64) {
             <map name="simple">
                 <!-- <area shape="poly" coords="78,83,70,100,52,104,64,115,61,133,78,124,94,133,91,116,104,102,87,101,79,88" href="#"> -->
                 {% for n in range(data|length) %}
-                    <area shape="poly" coords="{{ data[n]['coordination'] }}" href="javascript:void(0)" onclick="saveImage('{{ data[n]['mask'] }}')" class="saveLink">
+                    <area id="area{{n}}" shape="poly" coords="{{ data[n]['coordination'] }}" href="javascript:void(0)" onclick="saveImage('{{ data[n]['mask'] }}')" class="saveLink">
                 {% endfor %}
             </map>
 

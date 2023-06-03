@@ -4,10 +4,17 @@ Enhanced image editing with the power of Generative AI
 ## Demo
 
 **Auto Segmentation:**
-https://github.com/Arnob1998/SAM-intregrated-Stable-Diffusion/assets/46885415/9dda00d8-cb9a-4597-92bc-83a19f51c19e
+
+
+https://github.com/Arnob1998/SAM-intregrated-Stable-Diffusion/assets/46885415/8110e135-e2da-43ab-b7e9-90c3e4e86e42
+
+
 
 **Manual Segmentation**
-https://github.com/Arnob1998/SAM-intregrated-Stable-Diffusion/assets/46885415/f6d2dc51-8de5-4c7c-b30f-22c47237d073
+
+
+https://github.com/Arnob1998/SAM-intregrated-Stable-Diffusion/assets/46885415/981843d0-a6e7-46fa-9fb4-f364aa75b7ef
+
 
 
 

@@ -43,7 +43,46 @@ function saveImage(imageBase64) {
     $("#modal_open").click();
 }
 
-        
+
+function setFocusParameter(value) {
+    var areaContainer = document.querySelector('.map_area');
+    // Empty the content inside the hyperlinkContainer
+    areaContainer.innerHTML = '';
+
+    if (value) {    
+        {% for n in range(data|length) %}
+            var area = document.createElement('area');
+            area.id = 'area{{n}}';
+            area.shape = 'poly';
+            area.coords = '{{ data[n]['coordination'] }}';
+            area.href = 'javascript:void(0)';
+            area.onclick = function() {
+                   saveImage('{{ data[n]['mask'] }}');
+                };
+            area.className = 'saveLink';
+
+            // Append the generated area element to the hyperlinkContainer
+            areaContainer.appendChild(area);
+        {% endfor %}
+    }
+    else{
+        {% for n in range(data_focus|length) %}
+            var area = document.createElement('area');
+            area.id = 'area{{n}}';
+            area.shape = 'poly';
+            area.coords = '{{ data_focus[n]['coordination'] }}';
+            area.href = 'javascript:void(0)';
+            area.onclick = function() {
+                   saveImage('{{ data_focus[n]['mask'] }}');
+                };
+            area.className = 'saveLink';
+
+            // Append the generated area element to the hyperlinkContainer
+            areaContainer.appendChild(area);
+        {% endfor %}        
+    }
+  }
+
     </script>
     <style>
         body,html {
@@ -75,21 +114,63 @@ function saveImage(imageBase64) {
             font-size:2.5rem
             }
         }
+
+        input[type="checkbox"] {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: red;
+            outline: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            box-shadow: inset 0 0 5px rgb(0 0 0 / 50%);
+        }
+
+        input[type="checkbox"]::before {
+          content: "";
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #fff;
+          position: absolute;
+          top: 0;
+          left: 0;
+          transition: 0.5s;
+        }
+
+        input[type="checkbox"]:checked::before {
+          transform: translateX(100%);
+          background: #fff;
+        }
+
+        input[type="checkbox"]:checked {
+          background: #00ed64;
+        }
+
     </style>   
 </head>
 <body>
-
     <div class="container d-flex align-items-center justify-content-center" style="height: 100vh;">
         <div class="jumbotron">
             <h1 class="display-6" style="text-align: center;">Select an Element you want to replace</h1>
-
+            
+            <div style="display: flex; align-items: center; padding-bottom: 15px; padding-top: 5px;">
+                <span style="color: #63e6be; font-size: large; font-weight: bold; padding-bottom: 3px; padding-right: 7px;">Focus Mode: </span>
+                <input type="checkbox" onclick="setFocusParameter(this.checked ? false : true)" checked>
+            </div>
+            
+            
             <!-- <img class="map" src="https://picsum.photos/800/534"  usemap="#simple" /> -->
             <img class="map" src="{{url_for('static', filename='uploaded_image.jpg')}}"  usemap="#simple" />
             <map name="simple">
                 <!-- <area shape="poly" coords="78,83,70,100,52,104,64,115,61,133,78,124,94,133,91,116,104,102,87,101,79,88" href="#"> -->
-                {% for n in range(data|length) %}
-                    <area id="area{{n}}" shape="poly" coords="{{ data[n]['coordination'] }}" href="javascript:void(0)" onclick="saveImage('{{ data[n]['mask'] }}')" class="saveLink">
+                <div class="map_area">
+                {% for n in range(data_focus|length) %}
+                    <area id="area{{n}}" shape="poly" coords="{{ data_focus[n]['coordination'] }}" href="javascript:void(0)" onclick="saveImage('{{ data_focus[n]['mask'] }}')" class="saveLink">
                 {% endfor %}
+                </div>
             </map>
 
             <div style="padding-top: 25px;">

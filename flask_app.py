@@ -38,20 +38,24 @@ def bbox_postprocess():
 @app.route("/auto_postprocess")
 def auto_postprocess():   
     # sam_pipe = Models.SAM_Pipeline()
+
     entity_masks = sam_pipe.auto_segmentation()
 
     annot_pipe = Models.Annotator_Pipeline()
     # entity_masks = annot_pipe.anti_aliasing(entity_masks)
-    coords = annot_pipe.extract_coordinates_from_mask(entity_masks)
+    coords = annot_pipe.extract_coordinates_from_mask(entity_masks, focus=False)
+    coords_focus = annot_pipe.extract_coordinates_from_mask(entity_masks, focus=True)
     # entity_annots = annot_pipe.edge_detechtion_annots(entity_annots, entity_masks[0].shape)
     # coords = annot_pipe.annot2coords(entity_annots)
 
     data = {}
+    data_focus = {}
 
     for i in range(len(entity_masks)):
         data[i] = {"mask": annot_pipe.simple_encode(entity_masks[i]), "coordination": coords[i]}
-
-    return render_template('auto-postprocess.html', data = data)
+        data_focus[i] = {"mask": annot_pipe.simple_encode(entity_masks[i]), "coordination": coords_focus[i]}
+    
+    return render_template('auto-postprocess.html', data = data, data_focus=data_focus)
 
 
 @app.route('/save_image', methods=['POST'])

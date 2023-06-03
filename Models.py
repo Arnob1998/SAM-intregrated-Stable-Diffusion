@@ -160,29 +160,38 @@ class Annotator_Pipeline:
 
         return annotations
 
-    def extract_coordinates_from_mask(self,mask_image):
+    def extract_coordinates_from_mask(self,mask_image, focus):
         # Load the mask image
         mask_image = np.array(mask_image).astype(np.uint8) * 255
         coordinates_all = []
 
-        for i in tqdm(range(len(mask_image))):
-            # Threshold the mask image to convert it into a binary image
-            _, binary_image = cv2.threshold(mask_image[i], 127, 255, cv2.THRESH_BINARY)
-            
-            # Find contours in the binary image
-            contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
-            # Extract the coordinates from the contours
-            coordinates = []
-            for contour in contours:
-                for point in contour:
-                    x, y = point[0]
-                    coordinates.append(x)
-                    coordinates.append(y)
-
-            coordinates_all.append(coordinates)
-            
+        for i in range(len(mask_image)):
+            mask_cords = self.extract_coordinates_from_single_mask(mask_image[i])
+            if focus:
+                coordinates_all.append(mask_cords[0]) # NOTE : Remove [0] to get mask of scinario instead of single entities
+            else:
+                coordinates_all.append(mask_cords)
+        
         return coordinates_all
+    
+    def extract_coordinates_from_single_mask(self,mask_image):
+        # Threshold the mask image to convert it into a binary image
+        _, binary_image = cv2.threshold(mask_image, 127, 255, cv2.THRESH_BINARY)
+
+        # Find contours in the binary image
+        contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        # Extract the coordinates for each contour separately
+        coordinates = []
+        for contour in contours:
+            contour_coordinates = []
+            for point in contour:
+                x, y = point[0]
+                contour_coordinates.append(x)
+                contour_coordinates.append(y)
+            coordinates.append(contour_coordinates)
+
+        return coordinates
 
     def annot2coords(self,annots):
         coords = []
